@@ -1,0 +1,164 @@
+---
+title: "Rapport d’Analyse des données Titanic"
+output: html_document
+date: "2024-11-14"
+---
+
+Informations sur le statut de survie, le sexe, l'âge et la classe des passagers de 1309 passagers dans le naufrage du Titanic en 1912
+
+### Présentation des variables
+
+```{r Titanic, echo=FALSE}
+library(carData)
+data("TitanicSurvival")
+
+# variable 'sex'
+cat("Sexe:\n")
+sex_table <- table(TitanicSurvival$sex)
+sex_percentage <- prop.table(sex_table) * 100
+cat("Effectifs et pourcentages de chaque sexe :\n")
+cat("Hommes (Effectif:", sex_table["male"], ")\n", round(sex_percentage["male"], 2), "%\n")
+cat("Femmes (Effectif:", sex_table["female"], ")\n", round(sex_percentage["female"], 2), "%\n\n")
+
+# variable 'passengerClass'
+cat("Classe des passagers:\n")
+class_table <- table(TitanicSurvival$passengerClass)
+class_percentage <- prop.table(class_table) * 100
+cat("Effectifs et pourcentages de chaque classe :\n")
+cat("1ère classe (Effectif:", class_table["1st"], ")\n", round(class_percentage["1st"], 2), "%\n")
+cat("2ème classe (Effectif:", class_table["2nd"], ")\n", round(class_percentage["2nd"], 2), "%\n")
+cat("3ème classe (Effectif:", class_table["3rd"], ")\n", round(class_percentage["3rd"], 2), "%\n\n")
+
+#variable 'survived'
+survived_table <- table(TitanicSurvival$survived) 
+survived_percentage <- prop.table(survived_table) * 100
+cat("Effectifs et pourcentages des survivants :\n")
+cat("Survivants (Effectif:", survived_table["yes"], ")\n", round(survived_percentage["yes"], 2), "%\n")
+cat("Non-survivants (Effectif:", survived_table["no"], ")\n", round(survived_percentage["no"], 2), "%\n")
+cat("\n")
+
+#variable 'age'
+min_age <- min(TitanicSurvival$age, na.rm = TRUE)
+max_age <- max(TitanicSurvival$age, na.rm = TRUE)
+etendue <- max_age - min_age
+q1 <- quantile(TitanicSurvival$age, 0.25, na.rm = TRUE)
+q2 <- median(TitanicSurvival$age, na.rm = TRUE)  # médiane
+q3 <- quantile(TitanicSurvival$age, 0.75, na.rm = TRUE)
+iqr <- q3 - q1
+moy <- mean(TitanicSurvival$age, na.rm = TRUE)
+et <- sd(TitanicSurvival$age, na.rm = TRUE)
+na_count <- sum(is.na(TitanicSurvival$age))
+effectif_age <- sum(!is.na(TitanicSurvival$age))
+
+cat("Statistiques descriptives pour l'âge :\n")
+cat("Effectif (sans valeurs manquantes):", effectif_age, "\n")
+cat("Minimum:", min_age, "\n")
+cat("Maximum:", max_age, "\n")
+cat("Étendue:", etendue, "\n")
+cat("Premier quartile (Q1):", q1, "\n")
+cat("Médiane (Q2):", q2, "\n")
+cat("Troisième quartile (Q3):", q3, "\n")
+cat("Écart interquartile (IQR):", iqr, "\n")
+cat("Moyenne:", round(moy, 2), "\n")
+cat("Écart-type:", round(et, 2), "\n")
+cat("Nombre de valeurs manquantes:", na_count, "\n")
+```
+
+### Graphique : Répartition des survivants en fonction du sexe et de la classe des passagers
+
+```{r graphique1, echo=FALSE}
+library(carData)
+library(ggplot2)
+data("TitanicSurvival")
+
+TitanicSurvival$survived <- as.factor(TitanicSurvival$survived)
+TitanicSurvival$sex <- as.factor(TitanicSurvival$sex)
+TitanicSurvival$passengerClass <- as.factor(TitanicSurvival$passengerClass)
+
+# Visualiser la répartition des survivants par sexe et classe
+ggplot(TitanicSurvival, aes(x = passengerClass, fill = survived)) +
+  geom_bar(position = "dodge", na.rm = TRUE) +  # Position dodge pour éviter le chevauchement
+  facet_wrap(~ sex) +  # Séparer les graphiques par sexe
+  labs(title = "Survivor Distribution by Sex and Class",
+       x = "Passenger Class",
+       y = "Number of Passengers",
+       fill = "Survived") +
+  theme_minimal()
+
+```
+
+### Graphique de la survie en fonction de l'âge
+
+```{r graphique 2, echo=FALSE}
+library(carData)
+library(ggplot2)
+data("TitanicSurvival")
+ggplot(subset(TitanicSurvival, !is.na(age)), 
+       aes(x = survived, y = age, fill = survived)) +
+  geom_violin(alpha = 0.7) +
+  geom_boxplot(width = 0.1, alpha = 0.5) +
+  labs(title = "Age Distribution by Survival Status",
+       x = "Survived",
+       y = "Age",
+       fill = "Survived") +
+  theme_minimal() +
+  stat_summary(fun = "mean", 
+              geom = "point", 
+              shape = 23, 
+              size = 2,
+              color = "black",
+              fill = "white") +
+    theme(legend.position = "none")
+```
+### Interprétation des résultats
+
+## 1. Relation entre Survie et Sexe :
+
+- Une forte disparité entre hommes et femmes est visible.
+- Les femmes ont eu un taux de survie nettement supérieur.
+
+Cette différence majeure s'explique par la règle "les femmes et les enfants d'abord" lors de l'évacuation.
+
+## 2. Relation entre Survie et Classe :
+
+On observe une hiérarchie claire dans les taux de survie :
+
+- 1ère classe : le meilleur taux de survie.
+- 2ème classe : taux de survie intermédiaire.
+- 3ème classe : taux de survie le plus faible.
+
+Ces différences peuvent s'expliquer par :
+
+- L'emplacement des cabines (plus proche des canots pour la 1ère classe).
+- L'accès à l'information pendant le naufrage.
+- Le traitement prioritaire des passagers de première classe.
+
+## 3. Relation entre Survie et Âge :
+
+- Les enfants (moins de 10 ans) ont eu de meilleures chances de survie.
+- La distribution des âges est différente entre survivants et non-survivants.
+- Les personnes très âgées semblent avoir eu moins de chances de survie.
+- La moyenne d'âge des survivants est légèrement plus basse que celle des non-survivants.
+
+## 4. Interactions entre variables :
+
+Les meilleures chances de survie étaient pour :
+
+- Les femmes de première classe (taux le plus élevé).
+- Les femmes de deuxième classe.
+- Les femmes de troisième classe.
+
+Les chances de survie les plus faibles étaient pour :
+
+- Les hommes de troisième classe (taux le plus faible).
+- Les hommes de deuxième classe.
+- Les hommes de première classe (bien que meilleur que les autres hommes).
+
+## Conclusion générale :
+
+- Le sexe était le facteur le plus déterminant pour la survie.
+- La classe sociale jouait un rôle important mais secondaire.
+- L'âge avait une influence, particulièrement pour les très jeunes passagers.
+
+Ces résultats reflètent les normes sociales de l'époque et les procédures d'évacuation du Titanic, avec une priorité claire donnée aux femmes et aux enfants, ainsi qu'un avantage significatif pour les passagers des classes supérieures.
+
