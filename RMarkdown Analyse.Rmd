@@ -8,35 +8,52 @@ Informations sur le statut de survie, le sexe, l'âge et la classe des passagers
 
 ### Présentation des variables
 
-```{r Titanic}
+## Variable 'sex'
+
+```{r variable sex}
 library(carData)
 data("TitanicSurvival")
 
 # variable 'sex'
+cat("Sexe:\n")
 sex_table <- table(TitanicSurvival$sex)
 sex_percentage <- prop.table(sex_table) * 100
-output_sex <- paste("Sexe:\n",
-                    "Effectifs et pourcentages de chaque sexe :\n",
-                    "Hommes (Effectif:", sex_table["male"], ") ", round(sex_percentage["male"], 2), "%\n",
-                    "Femmes (Effectif:", sex_table["female"], ") ", round(sex_percentage["female"], 2), "%\n\n", sep="")
+cat("Effectifs et pourcentages de chaque sexe :\n")
+cat("Hommes (Effectif:", sex_table["male"], ")\n", round(sex_percentage["male"], 2), "%\n")
+cat("Femmes (Effectif:", sex_table["female"], ")\n", round(sex_percentage["female"], 2), "%\n\n")
 
+```
+
+
+## Variable 'passengerClass'
+
+```{r variable passengerClass}
 # variable 'passengerClass'
+cat("Classe des passagers:\n")
 class_table <- table(TitanicSurvival$passengerClass)
 class_percentage <- prop.table(class_table) * 100
-output_class <- paste("Classe des passagers:\n",
-                      "Effectifs et pourcentages de chaque classe :\n",
-                      "1ère classe (Effectif:", class_table["1st"], ") ", round(class_percentage["1st"], 2), "%\n",
-                      "2ème classe (Effectif:", class_table["2nd"], ") ", round(class_percentage["2nd"], 2), "%\n",
-                      "3ème classe (Effectif:", class_table["3rd"], ") ", round(class_percentage["3rd"], 2), "%\n\n", sep="")
+cat("Effectifs et pourcentages de chaque classe :\n")
+cat("1ère classe (Effectif:", class_table["1st"], ")\n", round(class_percentage["1st"], 2), "%\n")
+cat("2ème classe (Effectif:", class_table["2nd"], ")\n", round(class_percentage["2nd"], 2), "%\n")
+cat("3ème classe (Effectif:", class_table["3rd"], ")\n", round(class_percentage["3rd"], 2), "%\n\n")
+```
 
-# variable 'survived'
+## Variable 'survived'
+
+```{r variable survived}
+#variable 'survived'
 survived_table <- table(TitanicSurvival$survived) 
 survived_percentage <- prop.table(survived_table) * 100
-output_survived <- paste("Effectifs et pourcentages des survivants :\n",
-                         "Survivants (Effectif:", survived_table["yes"], ") ", round(survived_percentage["yes"], 2), "%\n",
-                         "Non-survivants (Effectif:", survived_table["no"], ") ", round(survived_percentage["no"], 2), "%\n", sep="")
+cat("Effectifs et pourcentages des survivants :\n")
+cat("Survivants (Effectif:", survived_table["yes"], ")\n", round(survived_percentage["yes"], 2), "%\n")
+cat("Non-survivants (Effectif:", survived_table["no"], ")\n", round(survived_percentage["no"], 2), "%\n")
+cat("\n")
+```
 
-# variable 'age'
+## Variable 'age'
+
+```{r variable age}
+#variable 'age'
 min_age <- min(TitanicSurvival$age, na.rm = TRUE)
 max_age <- max(TitanicSurvival$age, na.rm = TRUE)
 etendue <- max_age - min_age
@@ -49,22 +66,18 @@ et <- sd(TitanicSurvival$age, na.rm = TRUE)
 na_count <- sum(is.na(TitanicSurvival$age))
 effectif_age <- sum(!is.na(TitanicSurvival$age))
 
-output_age <- paste("Statistiques descriptives pour l'âge :\n",
-                    "Effectif (sans valeurs manquantes):", effectif_age, "\n",
-                    "Minimum:", min_age, "\n",
-                    "Maximum:", max_age, "\n",
-                    "Étendue:", etendue, "\n",
-                    "Premier quartile (Q1):", q1, "\n",
-                    "Médiane (Q2):", q2, "\n",
-                    "Troisième quartile (Q3):", q3, "\n",
-                    "Écart interquartile (IQR):", iqr, "\n",
-                    "Moyenne:", round(moy, 2), "\n",
-                    "Écart-type:", round(et, 2), "\n",
-                    "Nombre de valeurs manquantes:", na_count, "\n", sep="")
-
-# Affichage final
-cat(output_sex, output_class, output_survived, output_age, sep="\n")
-
+cat("Statistiques descriptives pour l'âge :\n")
+cat("Effectif (sans valeurs manquantes):", effectif_age, "\n")
+cat("Minimum:", min_age, "\n")
+cat("Maximum:", max_age, "\n")
+cat("Étendue:", etendue, "\n")
+cat("Premier quartile (Q1):", q1, "\n")
+cat("Médiane (Q2):", q2, "\n")
+cat("Troisième quartile (Q3):", q3, "\n")
+cat("Écart interquartile (IQR):", iqr, "\n")
+cat("Moyenne:", round(moy, 2), "\n")
+cat("Écart-type:", round(et, 2), "\n")
+cat("Nombre de valeurs manquantes:", na_count, "\n")
 ```
 
 ## Graphique : Répartition des survivants en fonction du sexe et de la classe des passagers
@@ -90,6 +103,8 @@ ggplot(TitanicSurvival, aes(x = passengerClass, fill = survived)) +
 
 ```
 
+Le graphique montre une forte disparité dans les taux de survie selon le sexe et la classe des passagers du Titanic. Les femmes ont eu des chances de survie bien supérieures aux hommes, atteignant près de 75% pour celles de première classe contre seulement 20% pour les hommes. La classe sociale a également joué un rôle important, les passagers de première classe ayant bénéficié des meilleures chances de survie, probablement grâce à leur proximité avec les canots de sauvetage.
+
 ## Graphique de la survie en fonction de l'âge
 
 ```{r graphique 2}
@@ -113,6 +128,8 @@ ggplot(subset(TitanicSurvival, !is.na(age)),
               fill = "white") +
     theme(legend.position = "none")
 ```
+
+Le graphique montre que l'âge était également un facteur influençant les chances de survie sur le Titanic. Les très jeunes enfants (moins de 10 ans) ont eu de meilleures chances de survie que les adultes. La moyenne d'âge des survivants est légèrement inférieure à celle des non-survivants. Cela suggère que les procédures d'évacuation ont donné la priorité aux passagers les plus jeunes. Cependant, on observe aussi que les personnes âgées ont eu des taux de survie plus faibles, probablement en raison de difficultés à accéder rapidement aux canots de sauvetage.
 
 ## Interprétation des résultats
 
