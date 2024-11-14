@@ -584,6 +584,45 @@ procédures d’évacuation du Titanic, avec une priorité claire donnée aux
 femmes et aux enfants, ainsi qu’un avantage significatif pour les
 passagers des classes supérieures.</p>
 </div>
+<div id="fonction-pour-calculer-le-taux-de-survie-par-classe" class="section level2">
+<h2>Fonction pour calculer le taux de survie par classe</h2>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attachement du package : &#39;dplyr&#39;</code></pre>
+<pre><code>## Les objets suivants sont masqués depuis &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## Les objets suivants sont masqués depuis &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(TitanicPackage)
+library(carData)
+data(&quot;TitanicSurvival&quot;)
+
+taux_survie_classe &lt;- calculate_survival_rate_by_class(TitanicSurvival)
+print(taux_survie_classe)</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   passengerClass total survived survival_rate
+##   &lt;fct&gt;          &lt;int&gt;    &lt;int&gt;         &lt;dbl&gt;
+## 1 1st              323      200          61.9
+## 2 2nd              277      119          43.0
+## 3 3rd              709      181          25.5</code></pre>
+</div>
+<div id="fonction-pour-calculer-le-taux-de-survie-par-sexe" class="section level2">
+<h2>Fonction pour calculer le taux de survie par sexe</h2>
+<pre class="r"><code>library(dplyr)
+library(TitanicPackage)
+library(carData)
+data(&quot;TitanicSurvival&quot;)
+
+taux_survie_sex &lt;- calculate_survival_rate_by_sex(TitanicSurvival)
+print(taux_survie_sex)</code></pre>
+<pre><code>## # A tibble: 2 × 4
+##   sex    total survived survival_rate
+##   &lt;fct&gt;  &lt;int&gt;    &lt;int&gt;         &lt;dbl&gt;
+## 1 female   466      339          72.8
+## 2 male     843      161          19.1</code></pre>
+</div>
 
 
 

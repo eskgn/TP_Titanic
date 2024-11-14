@@ -183,3 +183,27 @@ Les chances de survie les plus faibles étaient pour :
 
 Ces résultats reflètent les normes sociales de l'époque et les procédures d'évacuation du Titanic, avec une priorité claire donnée aux femmes et aux enfants, ainsi qu'un avantage significatif pour les passagers des classes supérieures.
 
+## Fonction pour calculer le taux de survie par classe
+
+```{r fonction}
+library(dplyr)
+library(TitanicPackage)
+library(carData)
+data("TitanicSurvival")
+
+taux_survie_classe <- calculate_survival_rate_by_class(TitanicSurvival)
+print(taux_survie_classe)
+```
+
+## Fonction pour calculer le taux de survie par sexe
+
+```{r fonction2}
+library(dplyr)
+library(TitanicPackage)
+library(carData)
+data("TitanicSurvival")
+
+taux_survie_sex <- calculate_survival_rate_by_sex(TitanicSurvival)
+print(taux_survie_sex)
+
+```
